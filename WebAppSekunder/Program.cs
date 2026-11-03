@@ -24,22 +24,29 @@ app.UseAuthorization();
 
 app.MapGet("/", () => Results.Content("""
     <h2 id="tall">...</h2>
-    <button onclick="upgrade()">Upgrade Salvage Rig</button>
-    <button onclick="powerPlant()">Upgrade Power Plant</button>
+    <button onclick="upgrade('miner')">Upgrade Miner</button>
+    <button onclick="upgrade('factory')">Upgrade Factory</button>
+    <div id="shipChoice" style="display:none; margin-top:10px">
+        <button onclick="upgrade('upgradeship')">Yes</button>
+        <button onclick="declined = true">No</button>
+    </div>
     <p id="svar"></p>
     <script>
+        let declined = false;
+
         setInterval(async () => {
             const svar = await fetch("/teller");
-            document.getElementById("tall").innerText = await svar.text();
+            const text = await svar.text();
+            document.getElementById("tall").innerText = text;
+
+            const ready = text.includes("Upgrade to");
+            if (!ready) declined = false;
+            document.getElementById("shipChoice").style.display =
+                ready && !declined ? "block" : "none";
         }, 1000);
 
-        async function upgrade() {
-            const svar = await fetch("/teller/knapp", { method: "POST" });
-            document.getElementById("svar").innerText = await svar.text();
-        }
-
-        async function powerPlant() {
-            const svar = await fetch("/teller/powerplant", { method: "POST" });
+        async function upgrade(hva) {
+            const svar = await fetch("/teller/" + hva, { method: "POST" });
             document.getElementById("svar").innerText = await svar.text();
         }
     </script>

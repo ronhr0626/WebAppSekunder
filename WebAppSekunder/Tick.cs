@@ -8,16 +8,16 @@ public class TickService(Teller teller) : BackgroundService
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
             teller.Sekund++;
-            teller.Credits += teller.SalvageRig;
-            teller.Structure = Math.Min(100, teller.Structure + teller.PowerPlant * 0.005);
+            teller.Credits += teller.Miner;
+            teller.Structure = Math.Min(100, teller.Structure + teller.Factory * 0.005);
 
             if (teller.SecondsLeft > 0)
             {
                 teller.SecondsLeft--;
                 if (teller.SecondsLeft == 0)
                 {
-                    if (teller.Building == "Salvage Rig") teller.SalvageRig++;
-                    if (teller.Building == "Power Plant") teller.PowerPlant++;
+                    if (teller.Building == "Miner") teller.Miner++;
+                    if (teller.Building == "Factory") teller.Factory++;
                     teller.Building = "";
                 }
             }
