@@ -1,18 +1,16 @@
 using WebAppSekunder;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<Teller>();
 builder.Services.AddHostedService<TickService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -20,9 +18,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Images")),
+    RequestPath = "/Images"
+});
+
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Content("""
+    <img id="shipImg" src="/Images/1.png" width="600" onerror="this.src='/Images/99.png'">
     <h2 id="tall">...</h2>
     <button onclick="upgrade('miner')">Upgrade Miner</button>
     <button onclick="upgrade('factory')">Upgrade Factory</button>
@@ -33,11 +38,18 @@ app.MapGet("/", () => Results.Content("""
     <p id="svar"></p>
     <script>
         let declined = false;
+        let lastImage = "1.png";
 
         setInterval(async () => {
             const svar = await fetch("/teller");
             const text = await svar.text();
             document.getElementById("tall").innerText = text;
+
+            const image = await (await fetch("/teller/image")).text();
+            if (image !== lastImage) {
+                lastImage = image;
+                document.getElementById("shipImg").src = "/Images/" + image;
+            }
 
             const ready = text.includes("Upgrade to");
             if (!ready) declined = false;
@@ -51,6 +63,7 @@ app.MapGet("/", () => Results.Content("""
         }
     </script>
     """, "text/html"));
+
 app.MapControllers();
 
 app.Run();

@@ -20,6 +20,15 @@ public class TellerController(Teller teller) : ControllerBase
 
         return text;
     }
+    [HttpGet("image")]
+    public string GetImage()
+    {
+        if (teller.ShipClass != 0)
+            return "99.png";
+
+        int stage = teller.Structure >= 100 ? 5 : (int)(teller.Structure / 25) + 1;
+        return $"{stage}.png";
+    }
 
     [HttpPost("upgradeship")]
     public string UpgradeShip()
