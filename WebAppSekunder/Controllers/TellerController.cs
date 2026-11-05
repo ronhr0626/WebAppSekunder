@@ -24,11 +24,9 @@ public class TellerController(Teller teller) : ControllerBase
     [HttpGet("image")]
     public string GetImage()
     {
-        if (teller.ShipClass != 0)
-            return "99.png";
-
         int stage = teller.Structure >= 100 ? 5 : (int)(teller.Structure / 25) + 1;
-        return $"{stage}.png";
+        int image = teller.ShipClass * 5 + stage;
+        return $"{image}.png";
     }
 
     [HttpPost("upgradeship")]
