@@ -29,12 +29,13 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Content("""
     <img id="shipImg" src="/Images/1.png" width="600" onerror="this.src='/Images/99.png'">
     <h2 id="tall">...</h2>
-    <button onclick="upgrade('miner')">Upgrade Miner</button>
-    <button onclick="upgrade('factory')">Upgrade Factory</button>
-    <div id="shipChoice" style="display:none; margin-top:10px">
+    <div id="shipChoice" style="display:none; margin-bottom:10px">
         <button onclick="upgrade('upgradeship')">Yes</button>
         <button onclick="declined = true">No</button>
     </div>
+    <button onclick="upgrade('miner')">Upgrade Miner</button>
+    <button onclick="upgrade('factory')">Upgrade Factory</button>
+    <button onclick="upgrade('testboost')" style="margin-left:20px">TEST +10 levels</button>
     <p id="svar"></p>
     <script>
         let declined = false;

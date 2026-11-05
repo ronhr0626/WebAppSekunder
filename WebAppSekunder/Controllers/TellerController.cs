@@ -20,6 +20,7 @@ public class TellerController(Teller teller) : ControllerBase
 
         return text;
     }
+
     [HttpGet("image")]
     public string GetImage()
     {
@@ -73,5 +74,13 @@ public class TellerController(Teller teller) : ControllerBase
         teller.Building = "Factory";
         teller.SecondsLeft = 2 * (teller.Factory + 1);
         return $"Building Factory Lv {teller.Factory + 1}";
+    }
+
+    [HttpPost("testboost")]
+    public string TestBoost()
+    {
+        teller.Miner += 10;
+        teller.Factory += 10;
+        return $"TEST: Miner Lv {teller.Miner}, Factory Lv {teller.Factory}";
     }
 }
